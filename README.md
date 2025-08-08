@@ -1,9 +1,10 @@
 # MQTT Connection Client
 
-A simple and powerful MQTT client written in Python that provides the ability to connect to MQTT servers and receive messages.
+A comprehensive MQTT client suite written in Python that provides both subscriber and publisher functionality for MQTT communication.
 
 ## Features
 
+### MQTT Subscriber (mqtt_client.py)
 - ✅ Easy connection to MQTT servers
 - ✅ Authentication support (Username/Password)
 - ✅ Subscribe to various topics
@@ -12,6 +13,15 @@ A simple and powerful MQTT client written in Python that provides the ability to
 - ✅ Complete message information display (time, topic, content)
 - ✅ Error handling and reconnection
 - ✅ Safe exit with Ctrl+C
+
+### MQTT Publisher (mqtt_publish.py)
+- ✅ Easy message publishing to MQTT servers
+- ✅ JSON payload support via external file
+- ✅ Authentication support (Username/Password)
+- ✅ Configurable QoS and retain settings
+- ✅ Automatic client ID suffix (-pub)
+- ✅ Colorful status display
+- ✅ Error handling and validation
 
 ## Installation and Setup
 
@@ -39,9 +49,9 @@ Or manually:
 pip install paho-mqtt colorama python-dotenv
 ```
 
-### Step 3: Run the program
+### Step 3: Run the programs
 
-#### Method 1: Interactive execution (recommended for beginners)
+#### Method 1: MQTT Subscriber (receive messages)
 
 ```bash
 python mqtt_client.py
@@ -52,14 +62,36 @@ The program will ask you for the following information:
 - Port (default: 1883)
 - Username (optional)
 - Password (optional)
-- Client ID (optional)
+- Client ID (optional, automatically gets "-sub" suffix)
 - Topic to subscribe
 - QoS level
 
-#### Method 2: Using simple example
+#### Method 2: MQTT Publisher (send messages)
+
+```bash
+python mqtt_publish.py
+```
+
+Before running, edit the `payload.json` file with your desired message content. The program will ask for:
+- MQTT server address
+- Port (default: 1883)
+- Username (optional)
+- Password (optional)
+- Client ID (optional, automatically gets "-pub" suffix)
+- Topic to publish to
+- QoS level
+- Retain message setting
+
+#### Method 3: Using simple example
 
 ```bash
 python simple_example.py
+```
+
+#### Method 4: Using advanced example
+
+```bash
+python advanced_example.py
 ```
 
 ## Usage Guide
@@ -99,7 +131,7 @@ for topic in topics:
     client.subscribe_to_topic(topic)
 ```
 
-### Send message
+### Send message using mqtt_client.py
 
 ```python
 # Send simple message
@@ -111,6 +143,32 @@ data = {"temperature": 25.5, "unit": "celsius", "sensor_id": "temp_01"}
 message = json.dumps(data, ensure_ascii=False)
 client.publish_message("sensors/temperature", message, qos=1)
 ```
+
+### Send message using mqtt_publish.py
+
+1. **Edit payload.json file:**
+```json
+{
+  "message": "Hello from MQTT Publisher!",
+  "timestamp": "2024-01-01T12:00:00Z",
+  "sender": "Python MQTT Client",
+  "data": {
+    "temperature": 25.5,
+    "humidity": 60,
+    "status": "active"
+  },
+  "priority": "normal"
+}
+```
+
+2. **Run the publisher:**
+```bash
+python mqtt_publish.py
+```
+
+3. **Enter connection details and topic when prompted**
+
+The message from `payload.json` will be automatically sent to the specified topic.
 
 ### Connection management
 
@@ -147,7 +205,7 @@ client.disconnect()
 
 ## Practical Examples
 
-### Example 1: Sensor monitoring
+### Example 1: Sensor monitoring (Subscriber)
 
 ```python
 from mqtt_client import MQTTClient
@@ -171,7 +229,29 @@ if client.connect_to_broker("broker.hivemq.com"):
         client.disconnect()
 ```
 
-### Example 2: Alert system
+### Example 2: Sensor data publishing (Publisher)
+
+1. **Create sensor_data.json:**
+```json
+{
+  "sensor_id": "temp_sensor_01",
+  "location": "Living Room",
+  "readings": {
+    "temperature": 23.5,
+    "humidity": 45.2,
+    "timestamp": "2024-01-15T10:30:00Z"
+  },
+  "status": "online",
+  "battery_level": 85
+}
+```
+
+2. **Rename to payload.json and run:**
+```bash
+python mqtt_publish.py
+```
+
+### Example 3: Alert system (Subscriber)
 
 ```python
 from mqtt_client import MQTTClient
@@ -200,6 +280,29 @@ class AlertSystem:
 # Usage
 alert_system = AlertSystem()
 alert_system.start_monitoring()
+```
+
+### Example 4: Alert publishing (Publisher)
+
+1. **Create alert payload.json:**
+```json
+{
+  "alert_id": "ALT_001",
+  "level": "critical",
+  "message": "Temperature exceeded safe limits",
+  "source": "temp_sensor_01",
+  "location": "Server Room",
+  "value": 85.5,
+  "threshold": 80.0,
+  "timestamp": "2024-01-15T14:45:00Z",
+  "action_required": true
+}
+```
+
+2. **Publish the alert:**
+```bash
+python mqtt_publish.py
+# Enter topic: alerts/critical
 ```
 
 ## Advanced Settings

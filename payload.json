@@ -1,0 +1,11 @@
+{
+  "message": "Hello from MQTT Publisher!",
+  "timestamp": "2024-01-01T12:00:00Z",
+  "sender": "Python MQTT Client",
+  "data": {
+    "temperature": 25.5,
+    "humidity": 60,
+    "status": "active"
+  },
+  "priority": "normal"
+}
